@@ -1,12 +1,12 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.35.1.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
 name:           lang
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/KubEF/lang#readme>
+description:    Please see the README on GitHub at <https://github.com/Lamagraph/intermediate-lang-distiller/tree/main/lang/README.md>
 homepage:       https://github.com/KubEF/lang#readme
 bug-reports:    https://github.com/KubEF/lang/issues
 author:         Efim Kubishkin
@@ -25,7 +25,7 @@ source-repository head
 
 library
   exposed-modules:
-      Expression
+      Syntax
   other-modules:
       Paths_lang
   autogen-modules:
