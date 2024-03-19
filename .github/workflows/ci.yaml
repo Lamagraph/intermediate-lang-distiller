@@ -16,8 +16,12 @@ jobs:
   pre-commit:
     uses: ./.github/workflows/pre-commit.yaml
 
-  hlint:
+  fourmolu:
     needs: pre-commit
+    uses: ./.github/workflows/fourmolu.yaml
+
+  hlint:
+    needs: fourmolu
     uses: ./.github/workflows/hlint.yaml
 
   build-and-test:
