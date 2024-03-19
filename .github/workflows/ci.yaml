@@ -16,6 +16,10 @@ jobs:
   pre-commit:
     uses: ./.github/workflows/pre-commit.yaml
 
-  build-and-test:
+  hlint:
     needs: pre-commit
+    uses: ./.github/workflows/hlint.yaml
+
+  build-and-test:
+    needs: hlint
     uses: ./.github/workflows/build-and-test.yaml
