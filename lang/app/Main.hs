@@ -13,7 +13,10 @@ bodyOfAppend =
     Case
         (Variable "xs")
         [ (Pat "Nil" [], Variable "ys")
-        , (Pat "Cons" ["x'", "xs'"], Constructor "Cons" [Variable "x'", Application (Application (Function "append") (Variable "xs'")) (Variable "ys")])
+        ,
+            ( Pat "Cons" ["x'", "xs'"]
+            , Constructor "Cons" [Variable "x'", Application (Application (Function "append") (Variable "xs'")) (Variable "ys")]
+            )
         ]
 
 appendInExp :: FunctionHeader

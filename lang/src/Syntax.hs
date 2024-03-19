@@ -1,6 +1,11 @@
 {-# LANGUAGE InstanceSigs #-}
 
-module Syntax (Expression (Variable, Constructor, Lambda, Application, Case, Let, Function), Fun, Pattern (Pat), FunctionHeader (Header)) where
+module Syntax (
+    Expression (Variable, Constructor, Lambda, Application, Case, Let, Function),
+    Fun,
+    Pattern (Pat),
+    FunctionHeader (Header),
+) where
 
 type Fun = String
 
@@ -27,7 +32,12 @@ instance Show Expression where
             Lambda v exp' -> "(λ" ++ show v ++ "." ++ show exp' ++ ")"
             Constructor name exps -> "(" ++ name ++ foldr (\x acc -> "(" ++ show x ++ ")" ++ acc) "" exps ++ ")"
             Application exp1 exp2 -> "(" ++ show exp1 ++ ")(" ++ show exp2 ++ ")"
-            Case exp' ls -> "(case " ++ show exp' ++ "of\n" ++ foldr (\(pat, exp'') acc -> "\t" ++ show pat ++ " => " ++ show exp'' ++ "\n" ++ acc) "" ls ++ ")"
+            Case exp' ls ->
+                "(case "
+                    ++ show exp'
+                    ++ "of\n"
+                    ++ foldr (\(pat, exp'') acc -> "\t" ++ show pat ++ " => " ++ show exp'' ++ "\n" ++ acc) "" ls
+                    ++ ")"
             Let var exp1 exp2 -> "let " ++ show var ++ " = " ++ show exp1 ++ " in " ++ show exp2
             Function f -> show f
 
