@@ -5,7 +5,7 @@
 $$
 \begin{alignat*}{3}
  &prog &&::= e_0\ \mathbf{where}\  h_1 = e_1\ \dots \ h_n = e_n&\\
- &e \in Exp& &::=  \ x&\\
+ &e &&::=  \ x&\\
         &&\mid & \ c\ e_1 \dots e_n&\\
         &&\mid & \ \lambda x.e&\\
         &&\mid & \ f&\\
