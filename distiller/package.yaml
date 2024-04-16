@@ -23,6 +23,7 @@ dependencies:
   - base >= 4.7 && < 5
   - lang
   - text
+  - containers
 
 language: GHC2021
 

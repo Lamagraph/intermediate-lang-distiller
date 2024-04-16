@@ -10,6 +10,7 @@ module Ast (
     Var (VarName, varName),
     Con (ConName, conName),
     Alt (Alt),
+    Alts,
 ) where
 
 import Data.Map.Strict (Map)
@@ -31,7 +32,7 @@ import Text.PrettyPrint.Leijen.Text (
 
 -- | Function name, must be lowercase
 newtype Fun = FunName {funName :: Text}
-    deriving (Show)
+    deriving (Show, Eq, Ord)
 
 instance Pretty Fun where
     pretty :: Fun -> Doc
