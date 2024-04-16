@@ -25,7 +25,7 @@ source-repository head
 
 library
   exposed-modules:
-      Syntax
+      Ast
   other-modules:
       Paths_lang
   autogen-modules:
@@ -37,7 +37,9 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , containers
     , text
+    , wl-pprint-text
   default-language: GHC2021
 
 executable lang-exe
@@ -53,8 +55,10 @@ executable lang-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , containers
     , lang
     , text
+    , wl-pprint-text
   default-language: GHC2021
 
 test-suite lang-test
@@ -71,6 +75,8 @@ test-suite lang-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , containers
     , lang
     , text
+    , wl-pprint-text
   default-language: GHC2021

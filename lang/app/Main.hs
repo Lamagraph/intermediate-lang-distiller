@@ -1,6 +1,8 @@
 module Main (main) where
 
-import Syntax
+import Ast
+import Data.Map.Strict as Map
+import Text.PrettyPrint.Leijen.Text (pretty)
 
 {-
 append xs ys = λ xs . λ ys . case xs of
@@ -8,23 +10,30 @@ append xs ys = λ xs . λ ys . case xs of
     Cons x' xs' => Cons x' (append xs' ys)
 -}
 
-bodyOfAppend :: Expression
+bodyOfAppend :: Expr
 bodyOfAppend =
     Case
-        (Variable "xs")
-        [ (Pat "Nil" [], Variable "ys")
-        ,
-            ( Pat "Cons" ["x'", "xs'"]
-            , Constructor "Cons" [Variable "x'", Application (Application (Function "append") (Variable "xs'")) (Variable "ys")]
-            )
-        ]
+        (Var $ VarName "xs")
+        $ Map.fromList
+            [ (ConName "Nil", Alt [] (Var $ VarName "ys"))
+            ,
+                ( ConName "Cons"
+                , Alt
+                    [VarName "x'", VarName "xs'"]
+                    ( Con (ConName "Cons") [Var $ VarName "x'", App (App (Fun $ FunName "append") (Var $ VarName "xs'")) (Var $ VarName "ys")]
+                    )
+                )
+            ]
 
-appendInExp :: FunctionHeader
+appendInExp :: Expr
 appendInExp =
-    Header
-        "append"
-        ["xs", "ys"]
-        (Lambda "xs" (Lambda "ys" bodyOfAppend))
+    App
+        ( Fun
+            (FunName "append")
+        )
+        (Lam (VarName "xs") (Lam (VarName "ys") bodyOfAppend))
 
 main :: IO ()
-main = print appendInExp
+main = do
+    print appendInExp
+    print $ pretty appendInExp

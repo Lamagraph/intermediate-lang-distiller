@@ -2,10 +2,10 @@ module Lib (
     someFunc,
 ) where
 
-import Syntax
+import Ast
 
-f :: Expression
-f = Lambda "x" (Variable "x")
+f :: Expr
+f = Lam (VarName "x") (Var $ VarName "x")
 
 someFunc :: IO ()
 someFunc = print f
