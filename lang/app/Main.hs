@@ -2,7 +2,9 @@ module Main (main) where
 
 import Ast
 import Data.Map.Strict as Map
+import Inference
 import Text.PrettyPrint.Leijen.Text (pretty)
+import TypedAst
 
 {-
 append xs ys = λ xs . λ ys . case xs of
@@ -37,3 +39,10 @@ main :: IO ()
 main = do
     print appendInExp
     print $ pretty appendInExp
+    case runInfer term of
+        Left e -> putStrLn ("No type: " ++ show e)
+        Right tyAns -> print tyAns
+  where
+    ty = Arrow (TypeVar 0) (TypeVar 0)
+    term = Lam (VarName "x") (App (App (Var $ VarName "+") x) x)
+    x = Var $ VarName "x"
