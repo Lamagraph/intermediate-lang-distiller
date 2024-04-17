@@ -5,11 +5,12 @@
 The grammar is based on [A Hierarchy of Program Transformers](https://www.researchgate.net/publication/229062264_A_Hierarchy_of_Program_Transformers).
 -}
 module Ast (
-    Expr (Var, Con, Lam, Fun, App, Case, Let),
-    Fun (FunName, funName),
-    Var (VarName, varName),
-    Con (ConName, conName),
-    Alt (Alt),
+    Expr (..),
+    Fun (..),
+    Var (..),
+    Con (..),
+    Alt (..),
+    Alts,
 ) where
 
 import Data.Map.Strict (Map)
