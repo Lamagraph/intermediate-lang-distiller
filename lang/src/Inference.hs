@@ -1,4 +1,4 @@
-module Inference (runInfer) where
+module Inference (Env, defaultEnv, runInfer, runInferDefault) where
 
 import Ast
 import Control.Monad.Except
@@ -32,21 +32,62 @@ lookupEnv env name = case Map.lookup name env of
         return (IntMap.empty, answer)
 
 defaultEnv :: Env
-defaultEnv = Map.empty -- Here probably must be Peano numbers and Lists
+defaultEnv =
+    Map.fromList
+        [ ("Z", Scheme.ofTy (Prim "Nat"))
+        , ("S", Scheme.ofTy (Arrow (Prim "Nat") (Prim "Nat")))
+        ]
+
+-- Here probably must be Peano numbers and Lists
+
+inferOfEither :: Either Error e -> MonadFresh e
+inferOfEither = \case
+    Left e -> throwError e
+    Right x -> return x
+
+unify :: Ty -> Ty -> MonadFresh Subst
+unify a b = inferOfEither $ Sub.unify a b
 
 infer :: Env -> Expr -> MonadFresh (Subst, Ty)
 infer env = \case
-    Var (VarName var) ->
-        do
-            -- env <- get
+    Var (VarName var) -> lookupEnv env var
+    Con (ConName con) exprs -> do
+        (conSub, conTy) <- lookupEnv env con
 
-            undefined
+        return (conSub, conTy)
+    Lam (VarName var) expr -> do
+        typeVar <- freshVar
+        let newEnv = Map.insert var (Scheme IntSet.empty typeVar) env
+        (sub, ty) <- infer newEnv expr
+        let resTy = Arrow (Sub.apply sub typeVar) ty
+        return (sub, resTy)
+    Fun (FunName fun) -> lookupEnv env fun
+    App f@(Fun (FunName fun)) expr -> do
+        funType <- tryError $ infer env f
+        case funType of
+            Left (NoVariable _) -> do
+                typeVar <- freshVar
+                let newEnv = Map.insert fun (Scheme IntSet.empty typeVar) env
+                infer newEnv expr
+            Left e -> throwError e
+            Right x -> undefined -- unify types
+    App lExpr rExpr -> do
+        (lSub, lTy) <- infer env lExpr
+        (rSub, rTy) <- infer (fmap (Scheme.apply lSub) env) rExpr
+        typeVar <- freshVar
+        unifiedSub <- unify (Sub.apply rSub lTy) (Arrow rTy typeVar)
+        let resTy = Sub.apply unifiedSub typeVar
+        final <- inferOfEither $ Sub.composeAll [lSub, rSub, unifiedSub]
+        return (final, resTy)
+    Case expr alts -> error "Cannot typecheck case of"
+    Let var varExpr expr -> error "Cannot typecheck let"
 
-runInfer :: Expr -> Either Error Ty
--- runInfer expr = do
---     res <- infer defaultEnv expr
+runInfer :: Env -> Expr -> Either Error Ty
+runInfer env expr = case res of
+    Left err -> Left err
+    Right (_, ty) -> Right ty
+  where
+    res = runMonadFresh (infer env expr) 0
 
---     case snd $ res 0 of
---         Left expr' -> Left expr'
---         Right (_, ty) -> Right ty
-runInfer expr = undefined
+runInferDefault :: Expr -> Either Error Ty
+runInferDefault = runInfer defaultEnv

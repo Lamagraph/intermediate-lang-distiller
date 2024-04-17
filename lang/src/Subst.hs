@@ -1,5 +1,5 @@
 {-# HLINT ignore "Eta reduce" #-}
-module Subst (Subst, apply) where
+module Subst (Subst, apply, unify, composeAll) where
 
 import Data.IntMap (IntMap)
 import Data.IntMap qualified as IntMap
