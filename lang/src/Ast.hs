@@ -1,5 +1,3 @@
-{-# LANGUAGE InstanceSigs #-}
-
 {- | Basic IL datatypes
 
 The grammar is based on [A Hierarchy of Program Transformers](https://www.researchgate.net/publication/229062264_A_Hierarchy_of_Program_Transformers).
@@ -95,7 +93,7 @@ Most probably will change after source language design.
 instance Pretty Expr where
     pretty :: Expr -> Doc
     pretty (Var var) = pretty var
-    pretty (Con con exprs) = pretty con <+> hsep (fmap pretty exprs)
+    pretty (Con con exprs) = parens $ pretty con <+> hsep (fmap pretty exprs)
     pretty (Lam var expr) = text "\\" <> pretty var <> text "." <> pretty expr
     pretty (Fun fun) = pretty fun
     pretty (App expr1 expr2) = parens (pretty expr1) <+> parens (pretty expr2)
