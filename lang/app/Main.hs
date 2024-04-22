@@ -36,8 +36,20 @@ appendInExp =
         )
         (Lam (VarName "xs") (Lam (VarName "ys") bodyOfAppend))
 
-two :: Expr
-two = App (Fun (FunName "two")) (Con (ConName "S") [Con (ConName "Z") []])
+one :: Expr
+one = App (Fun (FunName "two")) (Con (ConName "S") [Con (ConName "Z") []])
+
+emptyList :: Expr
+emptyList = App (Fun $ FunName "emptyList") (Con (ConName "Nil") [])
+
+listOfZero :: Expr
+listOfZero = Con (ConName "Cons") [Con (ConName "Z") [], Con (ConName "Nil") []]
+
+listOfOne :: Expr
+listOfOne =
+    App
+        (Fun $ FunName "listOfOne")
+        (Con (ConName "Cons") [Con (ConName "S") [Con (ConName "Z") []], Con (ConName "Nil") []])
 
 kakaduEnv :: Env
 kakaduEnv =
@@ -52,6 +64,16 @@ kakaduEnv =
     arith = Scheme.ofTy $ Arrow (Prim "int") $ Arrow (Prim "int") (Prim "int")
     eqS = Scheme.ofTy $ Arrow (TypeVar 0) $ Arrow (TypeVar 0) $ Prim "bool"
 
+inferTest :: Expr -> IO ()
+inferTest expr = do
+    putStrLn ""
+
+    print expr
+    print $ pretty expr
+    case runInferDefault expr of
+        Left e -> putStrLn ("No type: " ++ show e)
+        Right tyAns -> print tyAns
+
 main :: IO ()
 main = do
     print $ pretty term
@@ -59,21 +81,7 @@ main = do
         Left e -> putStrLn ("No type: " ++ show e)
         Right tyAns -> print tyAns
 
-    putStrLn ""
-
-    print two
-    print $ pretty two
-    case runInferDefault two of
-        Left e -> putStrLn ("No type: " ++ show e)
-        Right tyAns -> print tyAns
-
-    putStrLn ""
-
-    print appendInExp
-    print $ pretty appendInExp
-    case runInferDefault appendInExp of
-        Left e -> putStrLn ("No type: " ++ show e)
-        Right tyAns -> print tyAns
+    mapM_ inferTest [one, emptyList, listOfZero, listOfOne, appendInExp]
   where
     ty = Arrow (TypeVar 0) (TypeVar 0)
     term = Lam (VarName "x") (App (App (Var $ VarName "+") x) x)
